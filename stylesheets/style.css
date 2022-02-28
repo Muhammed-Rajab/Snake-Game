@@ -7,6 +7,34 @@
     box-sizing: border-box;
 }
 
+body{
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 /* Utility classes */
 
 /* Styling starts here */
+#game-grid{
+    display: flex;
+    width: 200px;
+    height: 200px;
+    flex-wrap: wrap;
+    border-style: solid;
+    box-sizing: content-box;
+}
+
+#game-grid > div {
+    width: 20px;
+    height: 20px;
+}
+
+.snake {
+    background-color: blue;
+}
+
+.apple {
+    background-color: red;
+}
