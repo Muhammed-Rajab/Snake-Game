@@ -10,7 +10,7 @@ const scoreDisplay = document.querySelector(".scoreDisplay");
 
 let width = 10;
 let currentSnake = [2, 1, 0];
-let currentIndex = 0, appleIndex = 0;
+let currentIndex = 0, peachIndex = 0;
 
 let score = 0;
 let speed = 0.8;
@@ -20,11 +20,18 @@ let interval = 0;
 let intervalTime = 0;
 
 function createBoard() {
+
+    let rowNo = 1;
+
     for (let i = 0; i < 100; i++){
         const newGrid = document.createElement('div');
         newGrid.dataset.index = i;
         newGrid.classList.add('grid-div');
         grid.appendChild(newGrid);
+        
+        newGrid.style.background = (i+rowNo) % 2 === 0 ? "#a2d149" : "#aad751";
+
+        (i+1) % 10 === 0 ? rowNo++ : "";
     }
 };
 
@@ -32,12 +39,12 @@ function startGame() {
     
     const squares = grid.querySelectorAll('div');
 
-    // * Generates a random apple in the grid
-    randomApple(squares);
+    // * Generates a random peach in the grid
+    randompeach(squares);
 
     // * Intial setups
     direction = 1;
-    intervalTime = 1000;
+    intervalTime = 800;
     
     currentIndex = 0;
     currentSnake = [2, 1, 0];
@@ -46,18 +53,22 @@ function startGame() {
 
     // * Adding snake class to current snake
     currentSnake.forEach(idx => squares[idx].classList.add('snake'));
+    squares[currentSnake[0]].classList.add('head');
+    squares[currentSnake.slice(-1)].classList.add('tail');
 
     // * Intervally moving the snake and taking necessary actions on move
     interval = setInterval(moveOutcome, intervalTime);
 
     // * Helper methods
-    function randomApple(squares) {
+    function randompeach(squares) {
         
         do {
-            appleIndex = Math.floor(Math.random() * squares.length);
-        } while (squares[appleIndex].classList.contains("snake"));
+            peachIndex = Math.floor(Math.random() * squares.length);
+        } while (squares[peachIndex].classList.contains("snake") && !currentSnake.includes(peachIndex));
         
-        squares[appleIndex].classList.add("apple");
+        // squares[peachIndex].textContent = "🍆";
+        squares[peachIndex].textContent = "🍑";
+        squares[peachIndex].classList.add("peach");
     };
 
     function control(e) {
@@ -79,24 +90,25 @@ function startGame() {
         }
     }
     
-    function eatApple (squares, tailIndex) {
+    function eatpeach (squares, tailIndex) {
         /*
-            If tail of the snake has apple class,
-                Remove the apple class
+            If tail of the snake has peach class,
+                Remove the peach class
                 Add snake class
                 Push tail
-                Generate random apple
+                Generate random peach
                 Increment score
                 Update score
                 clearInterval and update speed;
                 Set new interval
         */
 
-        if (squares[currentSnake[0]].classList.contains("apple")) {
-            squares[currentSnake[0]].classList.remove("apple");
+        if (squares[currentSnake[0]].classList.contains("peach")) {
+            squares[currentSnake[0]].classList.remove("peach");
+            squares[currentSnake[0]].textContent = "";
             squares[tailIndex].classList.add("snake");
             currentSnake.push(tailIndex);
-            randomApple(squares);
+            randompeach(squares);
             scoreDisplay.textContent = ++score;
             clearInterval(interval);
             intervalTime *= speed;
@@ -128,13 +140,21 @@ function startGame() {
         
         let tailIndex = currentSnake.pop();
         log(tailIndex);
+        
         squares[tailIndex].classList.remove("snake");
+        
+        squares[tailIndex].classList.remove("tail");
+        squares[currentSnake[0]].classList.remove("head");
+
         currentSnake.unshift(currentSnake[0] + direction);
 
         // * Current movement is done
 
-        eatApple(squares, tailIndex);
+        eatpeach(squares, tailIndex);
         squares[currentSnake[0]].classList.add('snake');
+        
+        squares[currentSnake[0]].classList.add('head');
+        squares[currentSnake.slice(-1)].classList.add('tail');
     };
 
     function moveOutcome(){
@@ -165,4 +185,8 @@ function startGame() {
 document.addEventListener("DOMContentLoaded", function() {
     createBoard();
     startGame();
+});
+
+document.querySelector('.restart-btn').addEventListener('click', () => {
+    window.location.reload();
 });
