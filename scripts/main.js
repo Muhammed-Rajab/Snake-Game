@@ -13,7 +13,7 @@ let currentSnake = [2, 1, 0];
 let currentIndex = 0, peachIndex = 0;
 
 let score = 0;
-let speed = 0.8;
+let speed = 0.75;
 let direction = 1, prev_direction = direction;
 
 let interval = 0;
@@ -44,7 +44,7 @@ function startGame() {
 
     // * Intial setups
     direction = 1;
-    intervalTime = 800;
+    intervalTime = 600;
     
     currentIndex = 0;
     currentSnake = [2, 1, 0];
@@ -118,7 +118,8 @@ function startGame() {
             randompeach(squares);
             scoreDisplay.textContent = ++score;
             clearInterval(interval);
-            intervalTime *= speed;
+            intervalTime =  (intervalTime - 30);
+            log(intervalTime);
             interval = setInterval(moveOutcome, intervalTime);
         }
     }
