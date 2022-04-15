@@ -14,7 +14,7 @@ let currentIndex = 0, peachIndex = 0;
 
 let score = 0;
 let speed = 0.8;
-let direction = 1;
+let direction = 1, prev_direction = direction;
 
 let interval = 0;
 let intervalTime = 0;
@@ -73,21 +73,28 @@ function startGame() {
 
     function control(e) {
         log("key pressed", )
+
+        prev_direction = direction;
+
+        let new_direction;
         switch(e.keyCode) {
             
             case 39: // Right
-                direction = 1;
+                new_direction = 1;
                 break;
             case 38: // Up
-                direction = -width;
+                new_direction = -width;
                 break;
             case 37: // Left
-                direction = -1;
+                new_direction = -1;
                 break;
             case 40: // Down
-                direction = +width;
+                new_direction = +width;
                 break;
         }
+
+        // if (!new_direction === direction)
+        direction = new_direction;
     }
     
     function eatpeach (squares, tailIndex) {
@@ -126,7 +133,13 @@ function startGame() {
 
         const hitTopWall = currentSnake[0] - width <= 0 && direction === -width;
 
-        const hitBody = squares[currentSnake[0] + direction].classList.contains("snake");
+        const hitBody = squares[currentSnake[0] + direction]?.classList.contains("snake") && (squares[currentSnake[1]] !== squares[currentSnake[0] + direction]);
+
+        if (squares[currentSnake[1]] === squares[currentSnake[0] + direction]){
+            direction = prev_direction;
+        }
+
+        log((squares[currentSnake[0] + direction] !== squares[currentSnake[0] - direction]));
         // const hitBody = false;
 
         if (hitBody || hitBottomWall || hitLeftWall || hitRightWall || hitTopWall) {
